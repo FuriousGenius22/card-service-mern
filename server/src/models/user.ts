@@ -9,9 +9,6 @@ export interface UserDoc {
   name?: string;
   signedUp: boolean;
   avatar?: { url:string; id: string };
-  authorId?: ObjectId;
-  books: ObjectId[];
-  orders?: ObjectId[];
   comparePassword(password: string): Promise<boolean>;
 }
 
@@ -44,22 +41,6 @@ const userSchema = new Schema<UserDoc>({
     url: String,
     id: String,
   },
-  authorId: {
-    type: Schema.Types.ObjectId,
-    ref: "Author",
-  },
-  books: [
-    {
-      type: Schema.ObjectId,
-      ref: "Book",
-    },
-  ],
-  orders: [
-    {
-      type: Schema.ObjectId,
-      ref: "Order",
-    },
-  ],
 });
 
 userSchema.pre("save", async function (next) {
