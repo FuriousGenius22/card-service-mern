@@ -1,11 +1,21 @@
 import { useState } from "react";
 import {
   CurrencyDollarIcon,
+  XMarkIcon,
+  ClipboardIcon,
 } from "@heroicons/react/24/solid";
 
 export default function TopUp() {
   const [amount, setAmount] = useState<number | string>("1000");
+  const [showModal, setShowModal] = useState(false);
 
+  // 🔴 This MUST come from backend in real app
+  const walletAddress = "TRh3Z9sZKxP4QZ9B9v6zU3XG8qPqA8dPz1";
+
+  const copyAddress = async () => {
+    await navigator.clipboard.writeText(walletAddress);
+    alert("Wallet address copied");
+  };
 
   return (
     <div className="w-full h-full px-4 sm:px-6 py-4 sm:py-6 font-sans text-[#111827]">
@@ -49,7 +59,6 @@ export default function TopUp() {
           Recommended • no commission
         </span>
 
-        {/* header */}
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
             <div className="bg-blue-600 rounded-full w-9 h-9 sm:w-10 sm:h-10
@@ -57,59 +66,79 @@ export default function TopUp() {
               <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
 
-            <div className="flex-1 sm:flex-none">
-              <p className="text-base sm:text-lg md:text-[18px] font-semibold leading-5">
+            <div>
+              <p className="text-base sm:text-lg md:text-[18px] font-semibold">
                 Cryptocurrency
               </p>
-
-              <p className="text-xs sm:text-sm md:text-[13px] text-[#4B5563] -mt-0.5 mb-1">
-                via{" "}
-                <span className="text-blue-600 underline cursor-pointer">
-                  DV.net
-                </span>
-              </p>
-
-              <p className="text-[#6B7280] leading-4 text-[11px] sm:text-[12px]">
-                Instant crediting — no commission
+              <p className="text-xs sm:text-sm md:text-[13px] text-[#4B5563]">
+                via <span className="text-blue-600 underline">DV.net</span>
               </p>
             </div>
           </div>
 
           <button
+            onClick={() => setShowModal(true)}
             className="bg-blue-600 text-white rounded-md px-4 sm:px-5 py-2 
                        font-semibold text-xs sm:text-sm md:text-[14px] hover:bg-blue-700 transition w-full sm:w-auto"
           >
             Pay
           </button>
         </div>
-
-        <div className="w-full h-px bg-gray-200 my-3" />
-
-        <div className="flex flex-wrap gap-2">
-
-          {[
-            "Bitcoincash",
-            "BNBSmartChain",
-            "Bitcoin",
-            "Ethereum",
-            "Polygon",
-            "Litecoin",
-            "Tron",
-          ].map((name) => (
-            <button
-              key={name}
-              className="border border-gray-300 rounded-full py-1 px-3 
-                         text-[12px] text-[#374151] bg-white
-                         hover:bg-gray-100 transition"
-            >
-              {name}
-            </button>
-          ))}
-
-        </div>
       </div>
 
+      {/* ================= MODAL ================= */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-5 relative">
 
+            {/* Close */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            >
+              <XMarkIcon className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-lg font-semibold mb-2">
+              Top up with cryptocurrency
+            </h2>
+
+            <p className="text-sm text-gray-600 mb-4 leading-5">
+              You can top up your account with cryptocurrency.
+              Scan or copy your provided wallet address and fund as you want.
+            </p>
+
+            {/* Amount */}
+            <div className="mb-3 text-sm">
+              <span className="text-gray-500">Amount:</span>{" "}
+              <span className="font-semibold">${amount}</span>
+            </div>
+
+            {/* QR Placeholder */}
+            <div className="border rounded-lg p-4 flex justify-center mb-4 bg-gray-50">
+              <div className="w-32 h-32 bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                QR CODE
+              </div>
+            </div>
+
+            {/* Address */}
+            <div className="border rounded-lg p-3 flex items-center justify-between gap-2 text-sm">
+              <span className="truncate">{walletAddress}</span>
+              <button
+                onClick={copyAddress}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <ClipboardIcon className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-[12px] text-gray-500 mt-3">
+              Send only <strong>USDT (TRC-20)</strong> to this address.
+              Funds will be credited automatically after network confirmation.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
