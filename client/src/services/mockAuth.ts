@@ -12,7 +12,7 @@ export async function signup(email: string, password: string) {
       throw new Error('Email already exists. Please try to log in.');
     }
     const errorData = await res.json();
-    throw new Error(errorData.errors?.email || errorData.errors?.password || 'Signup failed');
+    throw new Error(errorData.error || 'Signup failed');
   }
   return await res.json();
 }
