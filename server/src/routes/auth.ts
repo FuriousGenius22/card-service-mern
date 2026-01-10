@@ -6,7 +6,7 @@ import {
   updateProfile,
 } from "@/controllers/auth";
 import { isAuth } from "@/middlewares/auth";
-import { fileParser } from "@/middlewares/file";
+
 import { Router } from "express";
 
 const authRouter = Router();
@@ -19,7 +19,6 @@ authRouter.post("/logout", isAuth, logout);
 authRouter.put(
   "/profile",
   isAuth,
-  fileParser,
   updateProfile
 );
 

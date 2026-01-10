@@ -10,11 +10,27 @@ export default function Dashboard() {
   const [cardCharge, setCardCharge] = useState<number>(0);
  
   useEffect(() => {
-    // TODO: Fetch balance and cardCharge from backend
-    setTimeout(() => {
-      setBalance(0); // Placeholder
-      setCardCharge(0); // Placeholder
-    }, 0);
+    const fetchBalance = async () => {
+      try {
+        const response = await fetch("/api/payment/balance", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setBalance(data.balance || 0);
+        }
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    };
+
+    // TODO: Fetch cardCharge from backend
+    fetchBalance();
+    setCardCharge(0); // Placeholder for now
+
+    // Refresh balance every 5 seconds
+    const interval = setInterval(fetchBalance, 5000);
+    return () => clearInterval(interval);
   }, []);
   const [dollars, cents] = balance.toFixed(2).split(".");
   return (
